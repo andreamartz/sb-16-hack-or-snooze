@@ -47,6 +47,9 @@ class StoryList {
     // TODO - Implement this functions!
     // this function should return the newly created story so it can be used in
     // the script.js file where it will be appended to the DOM
+    
+    // POST req to API to create story (provide object containing token and storyObj)
+    return new Story(storyObj);
   }
 }
 
