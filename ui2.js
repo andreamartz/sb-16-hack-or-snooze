@@ -221,15 +221,23 @@ $(async function () {
 
   /**
    * A function to render HTML for an individual Story instance
+   * - story: a story object
+   * - displayTrashCan: a boolean argument
    */
 
-  function generateStoryHTML(story) {
+  function generateStoryHTML(story, displayTrashCan) {
     let hostName = getHostName(story.url);
+    let starType = isFavorite(story) ? "fas" : "far";
+    let trashIcon = displayTrashCan
+      ? `<span class="trash-can"><i class"fas fa-trash-alt"></i></span>`
+      : "";
 
     // render story markup
     const storyMarkup = $(`
       <li id="${story.storyId}">
         <a class="story-link" href="${story.url}" target="a_blank">
+          <span>${trashIcon}</span>
+          <span><i class="${starType} fa-star"></i></span>
           <strong>${story.title}</strong>
         </a>
         <small class="story-author">by ${story.author}</small>
