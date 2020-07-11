@@ -28,7 +28,7 @@ class StoryList {
     const response = await axios.get(`${BASE_URL}/stories`);
 
     // turn the plain old story objects from the API into instances of the Story class
-    const stories = response.data.stories.map(story => new Story(story));
+    const stories = response.data.stories.map((story) => new Story(story));
 
     // build an instance of our own class using the new array of stories
     const storyList = new StoryList(stories);
@@ -48,8 +48,9 @@ class StoryList {
     // this function should return the newly created story so it can be used in
     // the script.js file where it will be appended to the DOM
   }
-}
 
+  async removeStory(user, storyId) {}
+}
 
 /**
  * The User class to primarily represent the current user.
@@ -83,8 +84,8 @@ class User {
       user: {
         username,
         password,
-        name
-      }
+        name,
+      },
     });
 
     // build a new User instance from the API response
@@ -106,16 +107,20 @@ class User {
     const response = await axios.post(`${BASE_URL}/login`, {
       user: {
         username,
-        password
-      }
+        password,
+      },
     });
 
     // build a new User instance from the API response
     const existingUser = new User(response.data.user);
 
     // instantiate Story instances for the user's favorites and ownStories
-    existingUser.favorites = response.data.user.favorites.map(s => new Story(s));
-    existingUser.ownStories = response.data.user.stories.map(s => new Story(s));
+    existingUser.favorites = response.data.user.favorites.map(
+      (s) => new Story(s)
+    );
+    existingUser.ownStories = response.data.user.stories.map(
+      (s) => new Story(s)
+    );
 
     // attach the token to the newUser instance for convenience
     existingUser.loginToken = response.data.token;
@@ -136,8 +141,8 @@ class User {
     // call the API
     const response = await axios.get(`${BASE_URL}/users/${username}`, {
       params: {
-        token
-      }
+        token,
+      },
     });
 
     // instantiate the user from the API information
@@ -147,8 +152,12 @@ class User {
     existingUser.loginToken = token;
 
     // instantiate Story instances for the user's favorites and ownStories
-    existingUser.favorites = response.data.user.favorites.map(s => new Story(s));
-    existingUser.ownStories = response.data.user.stories.map(s => new Story(s));
+    existingUser.favorites = response.data.user.favorites.map(
+      (s) => new Story(s)
+    );
+    existingUser.ownStories = response.data.user.stories.map(
+      (s) => new Story(s)
+    );
     return existingUser;
   }
 }
@@ -158,7 +167,6 @@ class User {
  */
 
 class Story {
-
   /**
    * The constructor is designed to take an object for better readability / flexibility
    * - storyObj: an object that has story properties in it
