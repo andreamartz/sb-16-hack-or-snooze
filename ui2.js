@@ -1,11 +1,11 @@
 $(async function () {
   // cache some selectors we'll be using quite a bit
-  const $allStoriesList = $("#all-articles-list");
+  const $allStoriesList = $("#all-stories-list");
   const $submitForm = $("#submit-form");
-  const $filteredArticles = $("#filtered-articles");
+  const $filteredStories = $("#filtered-stories");
   const $loginForm = $("#login-form");
   const $createAccountForm = $("#create-account-form");
-  const $ownStories = $("#my-articles");
+  const $ownStories = $("#my-stories");
   const $navLogin = $("#nav-login");
   const $navLogOut = $("#nav-logout");
 
@@ -114,7 +114,19 @@ $(async function () {
   });
 
   /**
-   * Event handler for submitting an article
+   * Event handler for submitting a story
+   */
+
+  /**********************************************
+   * OTHER EVENT HANDLERS
+   **********************************************/
+
+  /**
+   * Event handler for clicking on star icon to favorite or unfavorite a story
+   */
+
+  /**
+   * Event handler for clicking on trash can icon to delete story
    */
 
   /**********************************************
@@ -188,7 +200,7 @@ $(async function () {
     const elementsArr = [
       $submitForm,
       $allStoriesList,
-      $filteredArticles,
+      $filteredStories,
       $ownStories,
       $loginForm,
       $createAccountForm,
@@ -217,12 +229,12 @@ $(async function () {
     // render story markup
     const storyMarkup = $(`
       <li id="${story.storyId}">
-        <a class="article-link" href="${story.url}" target="a_blank">
+        <a class="story-link" href="${story.url}" target="a_blank">
           <strong>${story.title}</strong>
         </a>
-        <small class="article-author">by ${story.author}</small>
-        <small class="article-hostname ${hostName}">(${hostName})</small>
-        <small class="article-username">posted by ${story.username}</small>
+        <small class="story-author">by ${story.author}</small>
+        <small class="story-hostname ${hostName}">(${hostName})</small>
+        <small class="story-username">posted by ${story.username}</small>
       </li>
     `);
 
