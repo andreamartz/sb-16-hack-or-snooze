@@ -4,12 +4,13 @@ $(async function () {
    ******************************************/
 
   // cache some selectors we'll be using quite a bit
+  const $storiesContainer = $(".stories-container");
   const $allStoriesList = $("#all-stories-list");
   const $filteredStories = $("#filtered-stories");
   const $submitForm = $("#submit-form");
   const $loginForm = $("#login-form");
   const $createAccountForm = $("#create-account-form");
-  const $ownStories = $("own-stories");
+  const $ownStories = $("#own-stories");
   const $navAll = $("#nav-all");
   const $navLogin = $("#nav-login");
   const $navLogOut = $("#nav-logout");
@@ -156,7 +157,7 @@ $(async function () {
     newStory = await storyList.addStory(currentUser, newStory);
     // generate markup for the new story
     const storyMarkup = generateStoryHTML(newStory);
-    $allStoriesList.append(storyMarkup);
+    $allStoriesList.prepend(storyMarkup);
     // hide form and reset it
     $submitForm.slideToggle();
     $submitForm.trigger("reset");
@@ -169,6 +170,23 @@ $(async function () {
   /**
    * Event handler for clicking on star icon to favorite or unfavorite a story
    */
+  $storiesContainer.on("click", $(".fa-star"), function (evt) {
+    const target = evt.target;
+    console.log("Target: ", target);
+    // get storyId for the clicked story
+    const $storyId = $(target).closest("li").attr("id");
+    // story is a favorite; unfavorite it
+    if ($(target).hasClass("fas")) {
+      $(target).removeClass("fas").addClass("far");
+      currentUser.removeFavorite($storyId);
+      // story is NOT a favorite; favorite it
+    } else if ($(target).hasClass("far")) {
+      $(target).removeClass("far").addClass("fas");
+      currentUser.addFavorite($storyId);
+    } else return;
+
+    // send api GET request to get the updated list of stories
+  });
 
   /**
    * Event handler for clicking on trash can icon to delete story
@@ -303,10 +321,10 @@ $(async function () {
     // get storyId
     const storyId = story.storyId;
     // determine if storyId is in array of currentUser's ownStories
-    const isFavorite =
-      jQuery.inArray(storyId, currentUser.ownStories) > -1 ? true : false;
+    // const isFavorite =
+    //   jQuery.inArray(storyId, currentUser.ownStories) > -1 ? true : false;
     // return true or false
-    return isFavorite;
+    // return isFavorite;
   }
 
   /* simple function to pull the hostname from a URL */
@@ -337,6 +355,6 @@ $(async function () {
    * TEMPORARY CODE
    *******************************/
 
-  console.log(currentUser);
-  console.log(storyList);
+  console.log("currentUser: ", currentUser);
+  console.log("storyList: ", storyList);
 });

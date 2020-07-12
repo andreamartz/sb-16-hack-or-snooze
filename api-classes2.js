@@ -172,19 +172,21 @@ class User {
   }
 
   addFavorite(storyId) {
-    return toggleFavorites(storyId, "POST");
+    return this.toggleFavorites(storyId, "POST");
   }
 
   removeFavorite(storyId) {
-    return toggleFavorites(storyId, "DELETE");
+    return this.toggleFavorites(storyId, "DELETE");
   }
 
   async toggleFavorites(storyId, httpVerb) {
     // send api request to update the user's favorites list
     const res = await axios({
-      method: `"${httpVerb}"`,
+      method: httpVerb,
       url: `${BASE_URL}/users/${this.username}/favorites/${storyId}`,
-      token: `${this.loginToken}`,
+      data: {
+        token: `${this.loginToken}`,
+      },
     });
   }
 }
