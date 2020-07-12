@@ -170,6 +170,23 @@ class User {
     );
     return existingUser;
   }
+
+  addFavorite(storyId) {
+    return toggleFavorites(storyId, "POST");
+  }
+
+  removeFavorite(storyId) {
+    return toggleFavorites(storyId, "DELETE");
+  }
+
+  async toggleFavorites(storyId, httpVerb) {
+    // send api request to update the user's favorites list
+    const res = await axios({
+      method: `"${httpVerb}"`,
+      url: `${BASE_URL}/users/${this.username}/favorites/${storyId}`,
+      token: `${this.loginToken}`,
+    });
+  }
 }
 
 /**
