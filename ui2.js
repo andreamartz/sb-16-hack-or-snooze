@@ -9,7 +9,8 @@ $(async function () {
   const $navLogin = $("#nav-login");
   const $navLogOut = $("#nav-logout");
 
-  // global storyList variable
+  // global storyList variable (an (array of stories))
+  // each story contains seven properties: author, createdAt, storyId, title, updatedAt, url, and username
   let storyList = null;
 
   // global currentUser variable
@@ -247,6 +248,22 @@ $(async function () {
     `);
 
     return storyMarkup;
+  }
+
+  /**
+   * Determines whether a story is in the currentUser's favorites
+   * Returns a boolean
+   * - story: a story object
+   */
+
+  function isFavorite(story) {
+    // get storyId
+    const storyId = story.storyId;
+    // determine if storyId is in array of currentUser's ownStories
+    const isFavorite =
+      jQuery.inArray(storyId, currentUser.ownStories) > -1 ? true : false;
+    // return true or false
+    return isFavorite;
   }
 
   /* simple function to pull the hostname from a URL */
