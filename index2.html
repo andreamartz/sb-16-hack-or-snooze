@@ -15,6 +15,7 @@
   </head>
 
   <body>
+    <!-- Navigation -->
     <nav>
       <b
         ><a class="nav-link navbar-brand" href="#" id="nav-all"
@@ -39,7 +40,9 @@
         <small>(logout)</small>
       </a>
     </nav>
+    <!-- END Navigation -->
     <section class="stories-container container">
+      <!-- Form: Submit story -->
       <form action="" class="hidden" id="submit-form">
         <div>
           <label for="author">author</label>
@@ -56,21 +59,29 @@
         <button type="submit">submit</button>
         <hr />
       </form>
+      <!-- END Form: Submit story -->
+      <!-- Stories -->
+      <!-- All stories -->
       <article>
         <ol id="all-stories-list" class="stories-list">
           <h3>Loading...</h3>
         </ol>
       </article>
+      <!-- Favorited Stories -->
       <article>
         <ul id="favorited-stories" class="hidden stories-list"></ul>
       </article>
+      <!-- Filtered Stories -->
       <article>
         <ul id="filtered-stories" class="hidden stories-list"></ul>
       </article>
+      <!-- My/Own stories -->
       <article>
         <ul id="own-stories" class="hidden stories-list"></ul>
       </article>
+      <!-- END Stories -->
     </section>
+    <!-- Edit Stories -->
     <section class="edit-story-container container">
       <form action="#" id="edit-story-form" class="hidden" method="post">
         <h4>Story Information</h4>
@@ -81,7 +92,10 @@
         </div>
       </form>
     </section>
+    <!-- END Edit Stories -->
+    <!-- Account Forms -->
     <section class="account-forms-container container">
+      <!-- Form: Login -->
       <form
         action="#"
         id="login-form"
@@ -100,6 +114,7 @@
         <button type="submit">login</button>
         <hr />
       </form>
+      <!-- Form: New Account -->
       <form
         action="#"
         id="create-account-form"
@@ -122,6 +137,8 @@
         <button type="submit">create account</button>
       </form>
     </section>
+    <!-- END Account Forms -->
+    <!-- User Profile -->
     <section id="user-profile" class="container hidden">
       <h4>User Profile Info</h4>
       <section>
@@ -130,6 +147,7 @@
         <div id="profile-account-date">Account Created:</div>
       </section>
     </section>
+    <!-- END User Profile -->
   </body>
   <script
     src="https://code.jquery.com/jquery-3.3.1.js"
