@@ -289,4 +289,11 @@ $(async function () {
       localStorage.setItem("username", currentUser.username);
     }
   }
+
+  /*******************************
+   * TEMPORARY CODE
+   *******************************/
+
+  console.log(currentUser);
+  console.log(storyList);
 });
