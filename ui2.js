@@ -6,6 +6,7 @@ $(async function () {
   // cache some selectors we'll be using quite a bit
   const $storiesContainer = $(".stories-container");
   const $allStoriesList = $("#all-stories-list");
+  const $favoritedStories = $("#favorited-stories");
   const $filteredStories = $("#filtered-stories");
   const $submitForm = $("#submit-form");
   const $loginForm = $("#login-form");
@@ -84,13 +85,10 @@ $(async function () {
    */
   $navFavorites.on("click", function () {
     // empty the stories list displayed
-    $allStoriesList.empty();
-    // loop through the currentUser's favorite stories
-    for (let story of currentUser.favorites) {
-      // for each fave, create the HTML for it
-      generateStories();
-      // append it to the storyList
-      // display the storyList in the DOM
+    hideElements();
+    if (currentUser) {
+      generateFavorites();
+      $favoritedStories.show();
     }
   });
 
@@ -239,6 +237,24 @@ $(async function () {
   }
 
   /**
+   * A rendering function to build the favorites list
+   */
+  function generateFavorites() {
+    // empty out the list
+    $favoritedStories.empty();
+    //
+    if (currentUser.favorites.length === 0) {
+      $favoritedStories.append("<p>No favorites added!</p>");
+      return;
+    }
+    for (let story of currentUser.favorites) {
+      // render each story in the list
+      let favoriteHTML = generateStoryHTML(story, false);
+      $favoritedStories.append(favoriteHTML);
+    }
+  }
+
+  /**
    * A rendering function to call the StoryList.getStories static method,
    *  which will generate a storyListInstance. Then render it.
    */
@@ -276,7 +292,10 @@ $(async function () {
 
   function showNavForLoggedInUser() {
     $navLogin.hide();
+    $userProfile.hide();
+    $("#main-nav-links", "#user-profile").toggleClass("hidden");
     $navLogOut.show();
+    $navWelcome.show();
   }
 
   /*************************************
