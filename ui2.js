@@ -84,10 +84,15 @@ $(async function () {
    */
   $navFavorites.on("click", function () {
     // empty the stories list displayed
+    $allStoriesList.empty();
     // loop through the currentUser's favorite stories
+    for (let story of currentUser.favorites) {
     // for each fave, create the HTML for it
+    generateStories();
     // append it to the storyList
     // display the storyList in the DOM
+    }
+
   });
 
   /**
@@ -172,17 +177,16 @@ $(async function () {
    */
   $storiesContainer.on("click", $(".fa-star"), function (evt) {
     const target = evt.target;
-    console.log("Target: ", target);
     // get storyId for the clicked story
     const $storyId = $(target).closest("li").attr("id");
     // story is a favorite; unfavorite it
     if ($(target).hasClass("fas")) {
       $(target).removeClass("fas").addClass("far");
-      currentUser.removeFavorite($storyId);
+      await currentUser.removeFavorite($storyId);
       // story is NOT a favorite; favorite it
     } else if ($(target).hasClass("far")) {
       $(target).removeClass("far").addClass("fas");
-      currentUser.addFavorite($storyId);
+      await currentUser.addFavorite($storyId);
     } else return;
 
     // send api GET request to get the updated list of stories
