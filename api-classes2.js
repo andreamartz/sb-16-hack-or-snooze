@@ -46,15 +46,15 @@ class StoryList {
   async addStory(user, newStory) {
     // TODO - Implement this functions!
     // this function should return the newly created story so it can be used in
-    // the script.js file where it will be appended to the DOM
+    // the ui.js file where it will be appended to the DOM
     // - user:
     // - newStory: an object with author, title, & url properties
     const token = user.loginToken;
     const data = {
       token,
-      newStory,
+      story: newStory,
     };
-    const res = axios.post(`${BASE_URL}/stories`, data);
+    const res = await axios.post(`${BASE_URL}/stories`, data);
     newStory = res.data.story;
     return newStory;
   }
@@ -169,6 +169,25 @@ class User {
       (s) => new Story(s)
     );
     return existingUser;
+  }
+
+  addFavorite(storyId) {
+    return this.toggleFavorites(storyId, "POST");
+  }
+
+  removeFavorite(storyId) {
+    return this.toggleFavorites(storyId, "DELETE");
+  }
+
+  async toggleFavorites(storyId, httpVerb) {
+    // send api request to update the user's favorites list
+    const res = await axios({
+      method: httpVerb,
+      url: `${BASE_URL}/users/${this.username}/favorites/${storyId}`,
+      data: {
+        token: `${this.loginToken}`,
+      },
+    });
   }
 }
 

@@ -4,12 +4,13 @@ $(async function () {
    ******************************************/
 
   // cache some selectors we'll be using quite a bit
+  const $storiesContainer = $(".stories-container");
   const $allStoriesList = $("#all-stories-list");
   const $filteredStories = $("#filtered-stories");
   const $submitForm = $("#submit-form");
   const $loginForm = $("#login-form");
   const $createAccountForm = $("#create-account-form");
-  const $ownStories = $("own-stories");
+  const $ownStories = $("#own-stories");
   const $navAll = $("#nav-all");
   const $navLogin = $("#nav-login");
   const $navLogOut = $("#nav-logout");
@@ -83,10 +84,15 @@ $(async function () {
    */
   $navFavorites.on("click", function () {
     // empty the stories list displayed
+    $allStoriesList.empty();
     // loop through the currentUser's favorite stories
+    for (let story of currentUser.favorites) {
     // for each fave, create the HTML for it
+    generateStories();
     // append it to the storyList
     // display the storyList in the DOM
+    }
+
   });
 
   /**
@@ -141,6 +147,26 @@ $(async function () {
   /**
    * Event handler for submitting a story
    */
+  $submitForm.on("submit", async function (evt) {
+    // prevent page refresh
+    evt.preventDefault();
+    // get title, author, and url from the form & create newStory
+    const title = $("#title").val();
+    const author = $("#author").val();
+    const url = $("#url").val();
+    let newStory = { title, author, url };
+    // get the hostname and username
+    const hostname = getHostName(url);
+    const username = currentUser.username;
+    // POST a new story to the api & save the returned story object
+    newStory = await storyList.addStory(currentUser, newStory);
+    // generate markup for the new story
+    const storyMarkup = generateStoryHTML(newStory);
+    $allStoriesList.prepend(storyMarkup);
+    // hide form and reset it
+    $submitForm.slideToggle();
+    $submitForm.trigger("reset");
+  });
 
   /**********************************************
    * OTHER EVENT HANDLERS
@@ -149,6 +175,22 @@ $(async function () {
   /**
    * Event handler for clicking on star icon to favorite or unfavorite a story
    */
+  $storiesContainer.on("click", $(".fa-star"), function (evt) {
+    const target = evt.target;
+    // get storyId for the clicked story
+    const $storyId = $(target).closest("li").attr("id");
+    // story is a favorite; unfavorite it
+    if ($(target).hasClass("fas")) {
+      $(target).removeClass("fas").addClass("far");
+      await currentUser.removeFavorite($storyId);
+      // story is NOT a favorite; favorite it
+    } else if ($(target).hasClass("far")) {
+      $(target).removeClass("far").addClass("fas");
+      await currentUser.addFavorite($storyId);
+    } else return;
+
+    // send api GET request to get the updated list of stories
+  });
 
   /**
    * Event handler for clicking on trash can icon to delete story
@@ -259,9 +301,10 @@ $(async function () {
     // render story markup
     const storyMarkup = $(`
       <li id="${story.storyId}">
+        <span>${trashIcon}</span>
+        <span><i class="${starType} fa-star"></i></span>
         <a class="story-link" href="${story.url}" target="a_blank">
-          <span>${trashIcon}</span>
-          <span><i class="${starType} fa-star"></i></span>
+          
           <strong>${story.title}</strong>
         </a>
         <small class="story-author">by ${story.author}</small>
@@ -283,10 +326,10 @@ $(async function () {
     // get storyId
     const storyId = story.storyId;
     // determine if storyId is in array of currentUser's ownStories
-    const isFavorite =
-      jQuery.inArray(storyId, currentUser.ownStories) > -1 ? true : false;
+    // const isFavorite =
+    //   jQuery.inArray(storyId, currentUser.ownStories) > -1 ? true : false;
     // return true or false
-    return isFavorite;
+    // return isFavorite;
   }
 
   /* simple function to pull the hostname from a URL */
@@ -317,6 +360,6 @@ $(async function () {
    * TEMPORARY CODE
    *******************************/
 
-  console.log(currentUser);
-  console.log(storyList);
+  console.log("currentUser: ", currentUser);
+  console.log("storyList: ", storyList);
 });
