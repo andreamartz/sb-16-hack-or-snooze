@@ -186,7 +186,7 @@ form > hr {
 
 #favorited-stories,
 #filtered-stories,
-#my-stories {
+#own-stories {
   list-style: none;
   padding-left: 20px;
 }

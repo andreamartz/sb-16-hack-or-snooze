@@ -1,13 +1,22 @@
 $(async function () {
+  /******************************************
+   * CACHED SELECTORS AND GLOBAL VARIABLES
+   ******************************************/
+
   // cache some selectors we'll be using quite a bit
   const $allStoriesList = $("#all-stories-list");
-  const $submitForm = $("#submit-form");
   const $filteredStories = $("#filtered-stories");
+  const $submitForm = $("#submit-form");
   const $loginForm = $("#login-form");
   const $createAccountForm = $("#create-account-form");
-  const $ownStories = $("#my-stories");
+
+  const $ownStories = $("own-stories");
+  const $navAll = $("#nav-all");
   const $navLogin = $("#nav-login");
   const $navLogOut = $("#nav-logout");
+  const $navSubmit = $("#nav-submit");
+  const $navFavorites = $("#nav-favorites");
+  const $navMyStories = $("#nav-my-stories");
 
   // global storyList variable (an (array of stories))
   // each story contains seven properties: author, createdAt, storyId, title, updatedAt, url, and username
@@ -48,7 +57,7 @@ $(async function () {
    * Event handler for clicking on "Hack or Snooze"
    */
 
-  $("body").on("click", "#nav-all", async function () {
+  $("nav").on("click", $navAll, async function () {
     hideElements();
     await generateStories();
     $allStoriesList.show();
@@ -60,15 +69,27 @@ $(async function () {
 
   /**
    * Event handler for clicking on submit
+   * Displays the submit story form
    */
+  $navSubmit.on("click", function () {
+    // display the submit story form
+  });
 
   /**
    * Event handler for clicking on favorites
    */
+  $navFavorites.on("click", function () {
+    // empty the stories list displayed
+    // loop through the currentUser's favorite stories
+    // for each fave, create the HTML for it
+    // append it to the storyList
+    // display the storyList in the DOM
+  });
 
   /**
    * Event handler for clicking on my stories
    */
+  $navMyStories.on("click", function () {});
 
   /****************************************
    * EVENT HANDLERS FOR FORM SUBMISSIONS
