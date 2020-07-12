@@ -297,9 +297,10 @@ $(async function () {
     // render story markup
     const storyMarkup = $(`
       <li id="${story.storyId}">
+        <span>${trashIcon}</span>
+        <span><i class="${starType} fa-star"></i></span>
         <a class="story-link" href="${story.url}" target="a_blank">
-          <span>${trashIcon}</span>
-          <span><i class="${starType} fa-star"></i></span>
+          
           <strong>${story.title}</strong>
         </a>
         <small class="story-author">by ${story.author}</small>
