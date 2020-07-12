@@ -87,12 +87,11 @@ $(async function () {
     $allStoriesList.empty();
     // loop through the currentUser's favorite stories
     for (let story of currentUser.favorites) {
-    // for each fave, create the HTML for it
-    generateStories();
-    // append it to the storyList
-    // display the storyList in the DOM
+      // for each fave, create the HTML for it
+      generateStories();
+      // append it to the storyList
+      // display the storyList in the DOM
     }
-
   });
 
   /**
@@ -175,21 +174,20 @@ $(async function () {
   /**
    * Event handler for clicking on star icon to favorite or unfavorite a story
    */
-  $storiesContainer.on("click", $(".fa-star"), function (evt) {
-    const target = evt.target;
+  $storiesContainer.on("click", ".fa-star", function (evt) {
+    const $target = $(evt.target);
     // get storyId for the clicked story
-    const $storyId = $(target).closest("li").attr("id");
+    const $storyId = $target.closest("li").attr("id");
     // story is a favorite; unfavorite it
-    if ($(target).hasClass("fas")) {
-      $(target).removeClass("fas").addClass("far");
-      await currentUser.removeFavorite($storyId);
-      // story is NOT a favorite; favorite it
-    } else if ($(target).hasClass("far")) {
-      $(target).removeClass("far").addClass("fas");
-      await currentUser.addFavorite($storyId);
-    } else return;
+    if ($target.hasClass("fas")) {
+      currentUser.removeFavorite($storyId);
+      $target.removeClass("fas").addClass("far");
 
-    // send api GET request to get the updated list of stories
+      // story is NOT a favorite; favorite it
+    } else if ($target.hasClass("far")) {
+      currentUser.addFavorite($storyId);
+      $target.removeClass("far").addClass("fas");
+    } else return;
   });
 
   /**

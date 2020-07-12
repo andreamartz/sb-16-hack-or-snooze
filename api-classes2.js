@@ -171,23 +171,39 @@ class User {
     return existingUser;
   }
 
-  addFavorite(storyId) {
-    return this.toggleFavorites(storyId, "POST");
+  async getUpdatedUser() {
+    const res = await axios.get(`${BASE_URL}/users/${this.username}`, {
+      params: { token: this.loginToken },
+    });
+    // update user's info from the api request
+    this.name = res.data.user.name;
+    this.createdAt = res.data.user.createdAt;
+    this.updatedAt = res.data.user.updatedAt;
+
+    // convert all of user's stories into instances of new Story();
+    this.favorites = res.data.user.favorites.map((story) => new Story(story));
+    this.ownStories = res.data.user.stories.map((story) => new Story(story));
   }
 
-  removeFavorite(storyId) {
-    return this.toggleFavorites(storyId, "DELETE");
-  }
-
-  async toggleFavorites(storyId, httpVerb) {
+  async toggleFavorite(storyId, httpVerb) {
     // send api request to update the user's favorites list
     const res = await axios({
       method: httpVerb,
       url: `${BASE_URL}/users/${this.username}/favorites/${storyId}`,
       data: {
-        token: `${this.loginToken}`,
+        token: this.loginToken,
       },
     });
+    await this.getUpdatedUser();
+    return this;
+  }
+
+  addFavorite(storyId) {
+    return this.toggleFavorite(storyId, "POST");
+  }
+
+  removeFavorite(storyId) {
+    return this.toggleFavorite(storyId, "DELETE");
   }
 }
 
