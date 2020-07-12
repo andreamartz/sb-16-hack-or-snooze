@@ -141,6 +141,26 @@ $(async function () {
   /**
    * Event handler for submitting a story
    */
+  $submitForm.on("submit", async function (evt) {
+    // prevent page refresh
+    evt.preventDefault();
+    // get title, author, and url from the form & create newStory
+    const title = $("#title").val();
+    const author = $("#author").val();
+    const url = $("#url").val();
+    let newStory = { title, author, url };
+    // get the hostname and username
+    const hostname = getHostName(url);
+    const username = currentUser.username;
+    // POST a new story to the api & save the returned story object
+    newStory = await storyList.addStory(currentUser, newStory);
+    // generate markup for the new story
+    const storyMarkup = generateStoryHTML(newStory);
+    $allStoriesList.append(storyMarkup);
+    // hide form and reset it
+    $submitForm.slideToggle();
+    $submitForm.trigger("reset");
+  });
 
   /**********************************************
    * OTHER EVENT HANDLERS
