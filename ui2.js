@@ -9,7 +9,6 @@ $(async function () {
   const $submitForm = $("#submit-form");
   const $loginForm = $("#login-form");
   const $createAccountForm = $("#create-account-form");
-
   const $ownStories = $("own-stories");
   const $navAll = $("#nav-all");
   const $navLogin = $("#nav-login");
@@ -71,8 +70,12 @@ $(async function () {
    * Event handler for clicking on submit
    * Displays the submit story form
    */
-  $navSubmit.on("click", function () {
+  $("nav").on("click", $navSubmit, function () {
+    if (!currentUser) return;
+    // hide stories, forms, and other content
+    hideElements();
     // display the submit story form
+    $submitForm.slideToggle();
   });
 
   /**
@@ -164,7 +167,6 @@ $(async function () {
     // let's see if we're logged in
     const token = localStorage.getItem("token");
     const username = localStorage.getItem("username");
-
     // if there is a token in localStorage, call User.getLoggedInUser
     //  to get an instance of User with the right details
     //  this is designed to run once, on page load
