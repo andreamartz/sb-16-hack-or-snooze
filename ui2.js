@@ -373,7 +373,7 @@ $(async function () {
     // render a trash can when displayTrashCan is true
     let trashIcon = displayTrashCan
       ? `<span class="trash-can">
-          <i class"fas fa-trash-alt"></i>
+          <i class="fas fa-trash-alt"></i>
         </span>`
       : "";
 
