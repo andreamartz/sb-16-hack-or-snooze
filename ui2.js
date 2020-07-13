@@ -204,6 +204,21 @@ $(async function () {
   /**
    * Event handler for clicking on trash can icon to delete story
    */
+  $storiesContainer.on("click", ".fa-trash-alt", async function (evt) {
+    const $target = $(evt.target);
+    console.log($target);
+    // get storyId for the clicked story
+    const $storyId = $target.closest("li").attr("id");
+    console.log($storyId);
+    // remove the story from the API
+    await storyList.removeStory(currentUser, $storyId);
+    // regenerate the story list
+    await generateStories();
+    // hide everything
+    hideElements();
+    // then show all stories
+    $allStoriesList.show();
+  });
 
   /**********************************************
    * RENDERING FUNCTIONS
