@@ -315,6 +315,11 @@ $(async function () {
 
     // loop through all of our stories and generate HTML for them
     for (let story of storyList.stories) {
+      const storyHTML = generateStoryHTML(story);
+      $allStoriesList.append(storyHTML);
+    }
+  }
+
   function generateMyStories() {
     $ownStories.empty();
     // User has no stories
@@ -342,7 +347,6 @@ $(async function () {
       $loginForm,
       $createAccountForm,
     ];
-    console.log("Hidden elementsArr ", elementsArr);
     elementsArr.forEach(($elem) => $elem.hide());
   }
 
