@@ -183,6 +183,8 @@ class User {
     // convert all of user's stories into instances of new Story();
     this.favorites = res.data.user.favorites.map((story) => new Story(story));
     this.ownStories = res.data.user.stories.map((story) => new Story(story));
+
+    return this;
   }
 
   async toggleFavorite(storyId, httpVerb) {
@@ -205,6 +207,25 @@ class User {
   removeFavorite(storyId) {
     return this.toggleFavorite(storyId, "DELETE");
   }
+
+  /**
+   * Send a PATCH request to the API in order to update the user
+   * - userData: the user properties you want to update
+   */
+
+  // async update(userData) {
+  //   const res = await axios({
+  //     url: `${BASE_URL}/users/${this.username}`,
+  //     method: "PATCH",
+  //     data: {
+  //       user: userData,
+  //       token: this.loginToken,
+  //     },
+  //   });
+  //   // update name
+  //   this.name = res.data.user.name;
+  //   return this;
+  // }
 }
 
 /**

@@ -321,7 +321,7 @@ $(async function () {
   function showNavForLoggedInUser() {
     $navLogin.hide();
     $userProfile.hide();
-    $("#main-nav-links", "#user-profile").toggleClass("hidden");
+    $("#main-nav-links, #user-profile").toggleClass("hidden");
     $navLogOut.show();
     $navWelcome.show();
   }
@@ -339,17 +339,22 @@ $(async function () {
   function generateStoryHTML(story, displayTrashCan) {
     let hostName = getHostName(story.url);
     let starType = isFavorite(story) ? "fas" : "far";
+
+    // render a trash can when displayTrashCan is true
     let trashIcon = displayTrashCan
-      ? `<span class="trash-can"><i class"fas fa-trash-alt"></i></span>`
+      ? `<span class="trash-can">
+          <i class"fas fa-trash-alt"></i>
+        </span>`
       : "";
 
     // render story markup
     const storyMarkup = $(`
       <li id="${story.storyId}">
-        <span>${trashIcon}</span>
-        <span><i class="${starType} fa-star"></i></span>
+        ${trashIcon}
+        <span>
+          <i class="${starType} fa-star"></i>
+        </span>
         <a class="story-link" href="${story.url}" target="a_blank">
-          
           <strong>${story.title}</strong>
         </a>
         <small class="story-author">by ${story.author}</small>
@@ -368,13 +373,17 @@ $(async function () {
    */
 
   function isFavorite(story) {
-    // get storyId
-    const storyId = story.storyId;
-    // determine if storyId is in array of currentUser's ownStories
-    // const isFavorite =
-    //   jQuery.inArray(storyId, currentUser.ownStories) > -1 ? true : false;
+    // start with an empty set of favorite story ids
+    let favoriteStoryIds = new Set();
+
+    if (currentUser) {
+      favoriteStoryIds = new Set(
+        currentUser.favorites.map((story) => story.storyId)
+      );
+    }
+    isFave = favoriteStoryIds.has(story.storyId);
     // return true or false
-    // return isFavorite;
+    return isFave;
   }
 
   /* simple function to pull the hostname from a URL */
