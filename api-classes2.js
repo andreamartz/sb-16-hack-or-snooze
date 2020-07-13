@@ -56,6 +56,11 @@ class StoryList {
     };
     const res = await axios.post(`${BASE_URL}/stories`, data);
     newStory = res.data.story;
+    // add the story to the beginning of the story list
+    this.stories.unshift(newStory);
+    // add the story to the beginning of the user's list
+    user.ownStories.unshift(newStory);
+
     return newStory;
   }
 
