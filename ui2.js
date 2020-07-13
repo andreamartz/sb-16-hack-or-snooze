@@ -101,7 +101,13 @@ $(async function () {
   /**
    * Event handler for clicking on my stories
    */
-  $navMyStories.on("click", function () {});
+  $navMyStories.on("click", function () {
+    hideElements();
+    if (currentUser) {
+      generateMyStories();
+      $ownStories.show();
+    }
+  });
 
   /****************************************
    * EVENT HANDLERS FOR FORM SUBMISSIONS
