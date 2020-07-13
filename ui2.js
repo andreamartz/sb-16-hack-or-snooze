@@ -315,8 +315,17 @@ $(async function () {
 
     // loop through all of our stories and generate HTML for them
     for (let story of storyList.stories) {
-      const result = generateStoryHTML(story);
-      $allStoriesList.append(result);
+  function generateMyStories() {
+    $ownStories.empty();
+    // User has no stories
+    if (currentUser.ownStories.length === 0) {
+      $ownStories.append("<p>No stories added by user yet!</p>");
+      // User has stories
+    } else {
+      for (let story of currentUser.ownStories) {
+        const storyHTML = generateStoryHTML(story, true);
+        $ownStories.append(storyHTML);
+      }
     }
   }
 
