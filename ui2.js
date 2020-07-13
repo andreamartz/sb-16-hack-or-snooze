@@ -294,8 +294,8 @@ $(async function () {
     } else {
       for (let story of currentUser.favorites) {
         // render each story in the list
-        let favoriteHTML = generateStoryHTML(story, false);
-        $favoritedStories.append(favoriteHTML);
+        const storyHTML = generateStoryHTML(story, false);
+        $favoritedStories.append(storyHTML);
       }
     }
   }
