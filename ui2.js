@@ -4,6 +4,7 @@ $(async function () {
    ******************************************/
 
   // cache some selectors we'll be using quite a bit
+  const $nav = $("nav");
   const $storiesContainer = $(".stories-container");
   const $allStoriesList = $("#all-stories-list");
   const $favoritedStories = $("#favorited-stories");
@@ -11,6 +12,7 @@ $(async function () {
   const $submitForm = $("#submit-form");
   const $loginForm = $("#login-form");
   const $createAccountForm = $("#create-account-form");
+  const $userProfile = $("#user-profile");
   const $ownStories = $("#own-stories");
   const $navAll = $("#nav-all");
   const $navLogin = $("#nav-login");
@@ -18,6 +20,8 @@ $(async function () {
   const $navSubmit = $("#nav-submit");
   const $navFavorites = $("#nav-favorites");
   const $navMyStories = $("#nav-my-stories");
+  const $navWelcome = $("#nav-welcome");
+  const $navUserProfile = $("#nav-user-profile");
 
   // global storyList variable (an (array of stories))
   // each story contains seven properties: author, createdAt, storyId, title, updatedAt, url, and username
@@ -58,7 +62,7 @@ $(async function () {
    * Event handler for clicking on "Hack or Snooze"
    */
 
-  $("nav").on("click", $navAll, async function () {
+  $nav.on("click", $navAll, async function () {
     hideElements();
     await generateStories();
     $allStoriesList.show();
@@ -67,17 +71,19 @@ $(async function () {
   /**
    * Event handler for clicking on username nav link
    */
+  // $navUserProfile.on("click", function () {});
 
   /**
    * Event handler for clicking on submit
    * Displays the submit story form
    */
-  $("nav").on("click", $navSubmit, function () {
-    if (!currentUser) return;
-    // hide stories, forms, and other content
+  $navSubmit.on("click", function () {
     hideElements();
-    // display the submit story form
-    $submitForm.slideToggle();
+    if (currentUser) {
+      $allStoriesList.show();
+      // display the submit story form
+      $submitForm.slideToggle();
+    }
   });
 
   /**
@@ -114,7 +120,7 @@ $(async function () {
     let username = $("#create-account-username").val();
     let password = $("#create-account-password").val();
 
-    // call the create method, which calls the API and then builds a new user instance
+    // call the User.create method, which calls the API and then builds a new user instance
     const newUser = await User.create(username, password, name);
     currentUser = newUser;
     syncCurrentUserToLocalStorage();
@@ -151,10 +157,11 @@ $(async function () {
     const title = $("#title").val();
     const author = $("#author").val();
     const url = $("#url").val();
-    let newStory = { title, author, url };
     // get the hostname and username
     const hostname = getHostName(url);
     const username = currentUser.username;
+    //
+    let newStory = { title, author, url };
     // POST a new story to the api & save the returned story object
     newStory = await storyList.addStory(currentUser, newStory);
     // generate markup for the new story
@@ -172,20 +179,20 @@ $(async function () {
   /**
    * Event handler for clicking on star icon to favorite or unfavorite a story
    */
-  $storiesContainer.on("click", ".fa-star", function (evt) {
+  $storiesContainer.on("click", ".fa-star", async function (evt) {
     const $target = $(evt.target);
     // get storyId for the clicked story
     const $storyId = $target.closest("li").attr("id");
     // story is a favorite; unfavorite it
     if ($target.hasClass("fas")) {
-      currentUser.removeFavorite($storyId);
+      await currentUser.removeFavorite($storyId);
       $target.removeClass("fas").addClass("far");
 
       // story is NOT a favorite; favorite it
-    } else if ($target.hasClass("far")) {
-      currentUser.addFavorite($storyId);
+    } else {
+      await currentUser.addFavorite($storyId);
       $target.removeClass("far").addClass("fas");
-    } else return;
+    }
   });
 
   /**
@@ -212,6 +219,7 @@ $(async function () {
     await generateStories();
 
     if (currentUser) {
+      generateUserProfile();
       showNavForLoggedInUser();
     }
   }
@@ -234,6 +242,23 @@ $(async function () {
 
     // update the navigation bar
     showNavForLoggedInUser();
+
+    // get a user profile
+    generateUserProfile();
+  }
+
+  /**
+   * Build a user profile and render username in nav and user info in profile area
+   */
+
+  function generateUserProfile() {
+    // Populate the user information in profile section
+    $("#profile-name").append(`${currentUser.name}`);
+    $("#profile-username").append(`${currentUser.username}`);
+    $("#profile-account-date").append(`${currentUser.createdAt.slice(0, 10)}`);
+
+    // Display user's name in nav welcome area
+    $navUserProfile.append(`${currentUser.username}`);
   }
 
   /**
@@ -245,12 +270,12 @@ $(async function () {
     //
     if (currentUser.favorites.length === 0) {
       $favoritedStories.append("<p>No favorites added!</p>");
-      return;
-    }
-    for (let story of currentUser.favorites) {
-      // render each story in the list
-      let favoriteHTML = generateStoryHTML(story, false);
-      $favoritedStories.append(favoriteHTML);
+    } else {
+      for (let story of currentUser.favorites) {
+        // render each story in the list
+        let favoriteHTML = generateStoryHTML(story, false);
+        $favoritedStories.append(favoriteHTML);
+      }
     }
   }
 
@@ -282,9 +307,12 @@ $(async function () {
       $allStoriesList,
       $filteredStories,
       $ownStories,
+      $userProfile,
+      $favoritedStories,
       $loginForm,
       $createAccountForm,
     ];
+    console.log("Hidden elementsArr ", elementsArr);
     elementsArr.forEach(($elem) => $elem.hide());
   }
 
