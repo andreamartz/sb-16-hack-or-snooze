@@ -78,8 +78,8 @@ $(async function () {
    * Displays the submit story form
    */
   $navSubmit.on("click", function () {
-    hideElements();
     if (currentUser) {
+      hideElements();
       $allStoriesList.show();
       // display the submit story form
       $submitForm.slideToggle();
