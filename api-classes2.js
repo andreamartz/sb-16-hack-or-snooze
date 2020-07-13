@@ -69,8 +69,13 @@ class StoryList {
     const data = {
       token,
     };
-    console.log("story ID: ", storyId, "token: ", token);
-    const res = await axios.delete(`${BASE_URL}/stories/${storyId}`, data);
+    const res = await axios({
+      url: `${BASE_URL}/stories/${storyId}`,
+      method: "DELETE",
+      data: {
+        token: user.loginToken,
+      },
+    });
     // remove the story from the story list
     this.stories = this.stories.filter((story) => story.storyId !== storyId);
     // remove the story from the user's list of own stories
