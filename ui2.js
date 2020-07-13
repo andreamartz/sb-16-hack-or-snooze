@@ -62,7 +62,7 @@ $(async function () {
    * Event handler for clicking on "Hack or Snooze"
    */
 
-  $nav.on("click", $navAll, async function () {
+  $navAll.on("click", async function () {
     hideElements();
     await generateStories();
     $allStoriesList.show();
