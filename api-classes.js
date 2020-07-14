@@ -28,7 +28,7 @@ class StoryList {
     const response = await axios.get(`${BASE_URL}/stories`);
 
     // turn the plain old story objects from the API into instances of the Story class
-    const stories = response.data.stories.map(story => new Story(story));
+    const stories = response.data.stories.map((story) => new Story(story));
 
     // build an instance of our own class using the new array of stories
     const storyList = new StoryList(stories);
@@ -46,10 +46,44 @@ class StoryList {
   async addStory(user, newStory) {
     // TODO - Implement this functions!
     // this function should return the newly created story so it can be used in
-    // the script.js file where it will be appended to the DOM
+    // the ui.js file where it will be appended to the DOM
+    // - user:
+    // - newStory: an object with author, title, & url properties
+    const token = user.loginToken;
+    const data = {
+      token,
+      story: newStory,
+    };
+    const res = await axios.post(`${BASE_URL}/stories`, data);
+    newStory = res.data.story;
+    // add the story to the beginning of the story list
+    this.stories.unshift(newStory);
+    // add the story to the beginning of the user's list
+    user.ownStories.unshift(newStory);
+
+    return newStory;
+  }
+
+  async removeStory(user, storyId) {
+    const token = user.loginToken;
+    const data = {
+      token,
+    };
+    const res = await axios({
+      url: `${BASE_URL}/stories/${storyId}`,
+      method: "DELETE",
+      data: {
+        token: user.loginToken,
+      },
+    });
+    // remove the story from the story list
+    this.stories = this.stories.filter((story) => story.storyId !== storyId);
+    // remove the story from the user's list of own stories
+    user.ownStories = user.ownStories.filter(
+      (story) => story.storyId !== storyId
+    );
   }
 }
-
 
 /**
  * The User class to primarily represent the current user.
@@ -83,8 +117,8 @@ class User {
       user: {
         username,
         password,
-        name
-      }
+        name,
+      },
     });
 
     // build a new User instance from the API response
@@ -106,16 +140,20 @@ class User {
     const response = await axios.post(`${BASE_URL}/login`, {
       user: {
         username,
-        password
-      }
+        password,
+      },
     });
 
     // build a new User instance from the API response
     const existingUser = new User(response.data.user);
 
     // instantiate Story instances for the user's favorites and ownStories
-    existingUser.favorites = response.data.user.favorites.map(s => new Story(s));
-    existingUser.ownStories = response.data.user.stories.map(s => new Story(s));
+    existingUser.favorites = response.data.user.favorites.map(
+      (s) => new Story(s)
+    );
+    existingUser.ownStories = response.data.user.stories.map(
+      (s) => new Story(s)
+    );
 
     // attach the token to the newUser instance for convenience
     existingUser.loginToken = response.data.token;
@@ -136,8 +174,8 @@ class User {
     // call the API
     const response = await axios.get(`${BASE_URL}/users/${username}`, {
       params: {
-        token
-      }
+        token,
+      },
     });
 
     // instantiate the user from the API information
@@ -147,10 +185,70 @@ class User {
     existingUser.loginToken = token;
 
     // instantiate Story instances for the user's favorites and ownStories
-    existingUser.favorites = response.data.user.favorites.map(s => new Story(s));
-    existingUser.ownStories = response.data.user.stories.map(s => new Story(s));
+    existingUser.favorites = response.data.user.favorites.map(
+      (s) => new Story(s)
+    );
+    existingUser.ownStories = response.data.user.stories.map(
+      (s) => new Story(s)
+    );
     return existingUser;
   }
+
+  async getUpdatedUser() {
+    const res = await axios.get(`${BASE_URL}/users/${this.username}`, {
+      params: { token: this.loginToken },
+    });
+    // update user's info from the api request
+    this.name = res.data.user.name;
+    this.createdAt = res.data.user.createdAt;
+    this.updatedAt = res.data.user.updatedAt;
+
+    // convert all of user's stories into instances of new Story();
+    this.favorites = res.data.user.favorites.map((story) => new Story(story));
+    this.ownStories = res.data.user.stories.map((story) => new Story(story));
+
+    return this;
+  }
+
+  async toggleFavorite(storyId, httpVerb) {
+    // send api request to update the user's favorites list
+    const res = await axios({
+      method: httpVerb,
+      url: `${BASE_URL}/users/${this.username}/favorites/${storyId}`,
+      data: {
+        token: this.loginToken,
+      },
+    });
+    await this.getUpdatedUser();
+    return this;
+  }
+
+  addFavorite(storyId) {
+    return this.toggleFavorite(storyId, "POST");
+  }
+
+  removeFavorite(storyId) {
+    return this.toggleFavorite(storyId, "DELETE");
+  }
+
+  /**
+   * Send a PATCH request to the API in order to update the user
+   * - userData: the user properties you want to update
+   */
+
+  // async update(userData) {
+  //   const res = await axios({
+  //     url: `${BASE_URL}/users/${this.username}`,
+  //     method: "PATCH",
+  //     data: {
+  //       user: userData,
+  //       token: this.loginToken,
+  //     },
+  //   });
+  //   // update name
+  //   this.name = res.data.user.name;
+  //   return this;
+  // }
 }
 
 /**
@@ -158,7 +256,6 @@ class User {
  */
 
 class Story {
-
   /**
    * The constructor is designed to take an object for better readability / flexibility
    * - storyObj: an object that has story properties in it

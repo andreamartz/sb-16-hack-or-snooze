@@ -1,7 +1,12 @@
 hack-or-snooze-frontend-screenshots.docx
 .vscode/
+.DS_Store
 index1.html
 api-classes1.js
 ui1.js
 *.docx
 *.xlsx
+old-files/
+api-classes-solution.js
+index-solution.html
+ui-solution.js
